@@ -216,3 +216,10 @@ class Admin(User):
         """
         self.role = User.UserTypes.ADMIN
         super().save(*args, **kwargs)
+
+
+class Subject(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
