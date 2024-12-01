@@ -1,9 +1,10 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
-
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import Subject
+
+User = get_user_model()
 
 
 class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -30,3 +31,31 @@ class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields = '__all__'
+
+
+class UserSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField(write_only=True, max_length=255, label="Password")
+    password2 = serializers.CharField(write_only=True, max_length=255, label="Password confirmation")
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'profile_image', 'phone_number', 'role', 'password1', 'password2']
+
+    def validate(self, data):
+        """
+        Check that the two passwords match.
+        """
+        if data.get('password1') and data.get('password2'):
+            if data['password1'] != data['password2']:
+                raise serializers.ValidationError("The two password fields didn't match.")
+        return data
+
+    def create(self, validated_data):
+        """
+        Create a new user instance and hash the password.
+        """
+        password = validated_data.pop('password1')  # Get the password1 value
+        user = User(**validated_data)
+        user.set_password(password)  # Hash the password before saving
+        user.save()
+        return user

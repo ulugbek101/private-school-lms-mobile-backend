@@ -5,10 +5,11 @@ from rest_framework_simplejwt.views import (
 )
 from rest_framework.routers import DefaultRouter
 
-from .views import SubjectViewSet
+from .views import SubjectViewSet, UserViewSet
 
 router = DefaultRouter()
 router.register(prefix='subjects', viewset=SubjectViewSet, basename='subjects')
+router.register(prefix='users', viewset=UserViewSet, basename='users')
 
 urlpatterns = router.urls
 

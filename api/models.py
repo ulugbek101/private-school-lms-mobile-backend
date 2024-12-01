@@ -5,7 +5,6 @@ from phonenumbers import PhoneNumberFormat, format_number, parse
 
 from .managers import AdminManager, StudentManager, TeacherManager
 from .managers import UserModelManager as UserManager
-from .user_roles import UserTypes
 
 
 class User(AbstractUser):
@@ -122,7 +121,7 @@ class User(AbstractUser):
 
         # Hash the password if it's not already hashed
         if self.password and not self.password.startswith(
-            ("pbkdf2_", "argon2$", "bcrypt$", "sha1$")
+                ("pbkdf2_", "argon2$", "bcrypt$", "sha1$")
         ):
             self.set_password(self.password)
 
